@@ -1,0 +1,18 @@
+{'pattern_id': 11213, 'vehicle_id': 3, 'headsign_text': '8 - Trent U Bata', 'velocity': 45, 'bearing': 36, 'lat': 44.2627727, 'lng': -78.3601317, 'last_update': '2026-10-07T20:20:58-04:00'}
+{'pattern_id': 11223, 'vehicle_id': 6, 'headsign_text': '9 - Fleming College', 'velocity': 45, 'bearing': 286, 'lat': 44.3496523, 'lng': -78.2940173, 'last_update': '2026-10-07T20:20:59-04:00'}
+{'pattern_id': 11158, 'vehicle_id': 10, 'headsign_text': '4 - PTBO Museum', 'velocity': 0, 'bearing': 275, 'lat': 44.3047383, 'lng': -78.322135, 'last_update': '2026-10-07T20:20:29-04:00'}
+{'pattern_id': 11215, 'vehicle_id': 11, 'headsign_text': '8 - Fleming College', 'velocity': 0, 'bearing': 222, 'lat': 44.3444858, 'lng': -78.3096308, 'last_update': '2026-10-07T20:20:33-04:00'}
+{'pattern_id': 11185, 'vehicle_id': 25, 'headsign_text': '6 - Fleming College', 'velocity': 28, 'bearing': 243, 'lat': 44.2679353, 'lng': -78.3661467, 'last_update': '2026-10-07T20:21:06-04:00'}
+{'pattern_id': 11234, 'vehicle_id': 60, 'headsign_text': '11 - Trent U Bata', 'velocity': 48, 'bearing': 40, 'lat': 44.348783, 'lng': -78.3035802, 'last_update': '2026-10-07T20:20:58-04:00'}
+{'pattern_id': 11202, 'vehicle_id': 61, 'headsign_text': '7A - Trent U Gzowksi', 'velocity': 52, 'bearing': 200, 'lat': 44.2812592, 'lng': -78.3036938, 'last_update': '2026-10-07T20:20:58-04:00'}
+{'pattern_id': 11137, 'vehicle_id': 76, 'headsign_text': '2 - Terminal to Lansdowne Place to Term', 'velocity': 0, 'bearing': 341, 'lat': 44.282146, 'lng': -78.3346692, 'last_update': '2026-10-07T20:20:45-04:00'}
+{'pattern_id': 11139, 'vehicle_id': 77, 'headsign_text': '2 - Terminal to Bata to Terminal', 'velocity': 18, 'bearing': 335, 'lat': 44.3087095, 'lng': -78.3280067, 'last_update': '2026-10-07T20:20:51-04:00'}
+{'pattern_id': 11203, 'vehicle_id': 78, 'headsign_text': '7A - Fleming College', 'velocity': 51, 'bearing': 198, 'lat': 44.2995117, 'lng': -78.296933, 'last_update': '2026-10-07T20:20:58-04:00'}
+{'pattern_id': 11139, 'vehicle_id': 80, 'headsign_text': '2 - Terminal to Bata to Terminal', 'velocity': 0, 'bearing': 43, 'lat': 44.3574722, 'lng': -78.2908035, 'last_update': '2026-10-07T20:20:55-04:00'}
+{'pattern_id': 11171, 'vehicle_id': 82, 'headsign_text': '5 - PTBO Terminal', 'velocity': 38, 'bearing': 160, 'lat': 44.2703393, 'lng': -78.3461752, 'last_update': '2026-10-07T20:20:46-04:00'}
+{'pattern_id': 11232, 'vehicle_id': 87, 'headsign_text': '11A - Traill College', 'velocity': 30, 'bearing': 253, 'lat': 44.3558608, 'lng': -78.294559, 'last_update': '2026-10-07T20:20:43-04:00'}
+{'pattern_id': 11190, 'vehicle_id': 88, 'headsign_text': '6 - Trent U Bata', 'velocity': 47, 'bearing': 73, 'lat': 44.2916277, 'lng': -78.3624225, 'last_update': '2026-10-07T20:20:48-04:00'}
+{'pattern_id': 11139, 'vehicle_id': 92, 'headsign_text': '2 - Terminal to Bata to Terminal', 'velocity': 17, 'bearing': 5, 'lat': 44.3041805, 'lng': -78.3266735, 'last_update': '2026-10-07T20:21:01-04:00'}
+{'pattern_id': 11233, 'vehicle_id': 108, 'headsign_text': '11 - PTBO Terminal', 'velocity': 7, 'bearing': 206, 'lat': 44.317009, 'lng': -78.3200373, 'last_update': '2026-10-07T20:21:00-04:00'}
+{'pattern_id': 11185, 'vehicle_id': 111, 'headsign_text': '6 - Fleming College', 'velocity': 22, 'bearing': 147, 'lat': 44.3366903, 'lng': -78.3314757, 'last_update': '2026-10-07T20:20:49-04:00'}
+{'pattern_id': 11147, 'vehicle_id': 112, 'headsign_text': '3 - Summit Plaza', 'velocity': 46, 'bearing': 159, 'lat': 44.3012205, 'lng': -78.3282412, 'last_update': '2026-10-07T20:20:58-04:00'}
