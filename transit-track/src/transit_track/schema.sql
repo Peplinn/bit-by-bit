@@ -1,4 +1,5 @@
-
+DROP TABLE IF EXISTS Patterns CASCADE;
+DROP TABLE IF EXISTS Positions CASCADE;
 
 CREATE TABLE Patterns (
     pattern_id int PRIMARY KEY,
@@ -22,5 +23,5 @@ CREATE TABLE Positions (
     PRIMARY KEY(vehicle_id, last_update),
 
     CONSTRAINT bus_possesses_pattern
-    FOREIGN KEY (pattern_id) REFERENCES Routes (pattern_id)
+    FOREIGN KEY (pattern_id) REFERENCES Patterns (pattern_id)
 );
