@@ -1,0 +1,47 @@
+patternID,routeID,routeName,routeCode,headSign,directionName,color
+11215,2627,Monaghan,8,8 - Fleming College,South,FF33CC
+11223,2628,Parkhill,9,9 - Fleming College,West,A92023
+11251,2632,CB Red,23,23 - Red Community Bus,Inbound,FC0008
+11147,2622,Park,3,3 - Summit Plaza,South,00B0F0
+11151,2623,Weller,4,4A - PTBO Museum,East,0070C0
+11160,2623,Weller,4,4 - PTBO Museum,East,0070C0
+11242,2630,O'Tech Connect,14,14A - PTBO Terminal,Inbound,806411
+11159,2623,Weller,4,4 - Woodglade at Lilico,West,0070C0
+11170,2624,The Parkway,5,5 - Fleming College,South,DED30B
+11182,2625,Sherbrooke,6,6B - Trent U Bata,East,066A40
+11183,2625,Sherbrooke,6,6B - PTBO Terminal,West,066A40
+11186,2625,Sherbrooke,6,6B - PTBO Terminal,West,066A40
+11202,2626,Lansdowne,7,7A - Trent U Gzowksi,East,7030A0
+11234,2629,Water,11,11 - Trent U Bata,North,38D6D1
+11235,2629,Water,11,11A - Trent U Bata,North,38D6D1
+11243,2630,O'Tech Connect,14,14 - PTBO Terminal,Inbound,806411
+11255,2633,Curve Lake,31,31 - Curve Lake,North,8B0017
+11256,2633,Curve Lake,31,31 - Trent U Bata,South,8B0017
+11266,2635,Standby,45,Not in Service,North,E6E897
+11269,2635,Standby,45,Not in Service,North,E6E897
+11137,2621,Chemong,2,2 - Terminal to Lansdowne Place to Term,South,C9500E
+11148,2622,Park,3,3 - Trent U Bata,North,00B0F0
+11185,2625,Sherbrooke,6,6 - Fleming College,West,066A40
+11203,2626,Lansdowne,7,7A - Fleming College,West,7030A0
+11206,2626,Lansdowne,7,7A - Fleming College,West,7030A0
+11226,2628,Parkhill,9,9 - Trent U Gzowski,East,A92023
+11233,2629,Water,11,11 - PTBO Terminal,South,38D6D1
+11258,2634,Bridgenorth,33,33 - Bridgenorth Library,North,8000FF
+11272,2636,Paratransit,50,Transit Handivan,North,91DBFF
+11158,2623,Weller,4,4 - PTBO Museum,East,0070C0
+11171,2624,The Parkway,5,5 - PTBO Terminal,North,DED30B
+11190,2625,Sherbrooke,6,6 - Trent U Bata,East,066A40
+11205,2626,Lansdowne,7,Holy Cross,West,7030A0
+11213,2627,Monaghan,8,8 - Trent U Bata,North,FF33CC
+11161,2623,Weller,4,4 - Woodglade at Lilico,West,0070C0
+11181,2625,Sherbrooke,6,6 -EXCLBR,East,066A40
+11207,2626,Lansdowne,7,7A - Trent U Gzowksi,East,7030A0
+11227,2628,Parkhill,9,9 - Trent U Gzowski,East,A92023
+11232,2629,Water,11,11A - Traill College,South,38D6D1
+11246,2631,CB Blue,22,22 - Blue Community Bus,Inbound,40A7B3
+11261,2634,Bridgenorth,33,33 - Trent U Bata,South,8000FF
+11271,2636,Paratransit,50,Transit Handivan,North,91DBFF
+11273,2636,Paratransit,50,Transit Handivan,South,91DBFF
+11139,2621,Chemong,2,2 - Terminal to Bata to Terminal,North,C9500E
+11162,2623,Weller,4,4C - Rogers-Hunter,East,0070C0
+11259,2634,Bridgenorth,33,33 - Trent U Bata,South,8000FF
