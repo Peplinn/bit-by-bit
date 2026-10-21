@@ -7,13 +7,17 @@ and moves the data to the Amazon RDS database.
 from zoneinfo import ZoneInfo
 
 import requests
+from dotenv import dotenv_values
 
 from transit_track.fetch import save_new_data
+from transit_track.load import load_logs
 
 
 def main():
     # route_url = "https://pt.mytransitride.com/api/Route"
     status_url = "https://pt.mytransitride.com/api/VehicleStatuses"
+
+    dotenv_path = "../../.env"
 
     with open("patterns.txt") as patterns:
         patternIds = patterns.read()
@@ -26,11 +30,12 @@ def main():
 
     PTBO_tz = ZoneInfo("America/Toronto")
 
+    current_logs_params = [PTBO_tz, server_time, parameters, status_url]
+
     try:
-        save_new_data(city_tz=PTBO_tz,
-                      server_time=server_time,
-                      parameters=parameters,
-                      status_url=status_url)
+        save_new_data(current_logs_params)
+
+        load_logs(dotenv_path, current_logs_params)
     except RuntimeError as e:
         print(e)
 

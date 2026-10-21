@@ -35,21 +35,21 @@ def get_current_logs(city_tz,server_time,parameters,status_url):
 
 # Something like:
 
-def save_new_data(city_tz,server_time,parameters,status_url):
+def save_new_data(current_logs_params):
     # get_current_logs()
 
     with open("data/incoming_data.json", "w+") as f:
         # incoming_data = convert_logs_to_str(get_current_logs())
-        json.dump(get_current_logs(city_tz,server_time,parameters,status_url), f, indent = 2)
+        json.dump(get_current_logs(*current_logs_params), f, indent = 2)
 
     new_log = pd.read_json("data/incoming_data.json")
 
     log = pd.read_json("data/full_logs.json")
 
-    new_log["last_update"] = pd.to_datetime(new_log["last_update"], utc=True) - pd.Timedelta(hours=4)
-    new_log["time_polled"] = pd.to_datetime(new_log["time_polled"], utc=True)
-    log["last_update"] = pd.to_datetime(log["last_update"], utc=True)
-    log["time_polled"] = pd.to_datetime(log["time_polled"], utc=True)
+    new_log["last_update"] = pd.to_datetime(new_log["last_update"]) #- pd.Timedelta(hours=4)
+    new_log["time_polled"] = pd.to_datetime(new_log["time_polled"])
+    log["last_update"] = pd.to_datetime(log["last_update"])
+    log["time_polled"] = pd.to_datetime(log["time_polled"])
 
 
 
@@ -82,6 +82,8 @@ def save_new_data(city_tz,server_time,parameters,status_url):
             # if update time is same, ignore
             else:
                 print("WE ARE NOT UPDATING LOG.\n")
+
+    log["last_update"] = log["last_update"].apply(lambda w: w.isoformat())
     
     log.to_json("data/full_logs.json", orient="records", indent = 2, date_format = "iso", index = False)
     
