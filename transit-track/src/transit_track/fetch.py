@@ -57,28 +57,28 @@ def save_new_data(current_logs_params):
     log["pattern_id"] = log["pattern_id"].astype("category")
     
     for vehicle_id in new_log["vehicle_id"].values:
-        print(f"This is the examined v_id from incoming: {vehicle_id}\n")
+        # print(f"This is the examined v_id from incoming: {vehicle_id}\n")
 
         row_to_add = new_log.loc[new_log["vehicle_id"] == vehicle_id]
-        print(f"This is the full row:\n {row_to_add}\nEnd of output\n\n")
+        # print(f"This is the full row:\n {row_to_add}\nEnd of output\n\n")
 
         # if this is a new bus reporting data:
         if vehicle_id not in log["vehicle_id"].values:
-            print("THIS SEEMS TO BE A NEW V_ID\n")
-            print(f"These are all the v_ids in log:\n{log["vehicle_id"].values}\n End of output.\n\n")
+            # print("THIS SEEMS TO BE A NEW V_ID\n")
+            # print(f"These are all the v_ids in log:\n{log["vehicle_id"].values}\n End of output.\n\n")
             # append its data
             log = pd.concat([log, row_to_add], ignore_index=True)
         # elif this bus has already been reporting
         # if the data is new
         else:
-            print("THIS SEEMS TO BE AN EXISTING V_ID\n")
+            # print("THIS SEEMS TO BE AN EXISTING V_ID\n")
             vehicle_most_recent = log.query("vehicle_id == @vehicle_id").nlargest(1, "last_update")
-            print(f"This is the most recent v_id of same type in log: {vehicle_most_recent}\n")
+            # print(f"This is the most recent v_id of same type in log: {vehicle_most_recent}\n")
 
             # vehicle in list, but differnt update tiems
             if row_to_add["last_update"].iloc[0] > vehicle_most_recent["last_update"].iloc[0]:
                 log = pd.concat([log, row_to_add], ignore_index=True)
-                print("WE ARE UPDATING LOG BECAUSE NEW DATA HAS MORE RECENT UPDATE TIME\n")
+                # print("WE ARE UPDATING LOG BECAUSE NEW DATA HAS MORE RECENT UPDATE TIME\n")
             # if update time is same, ignore
             else:
                 print("WE ARE NOT UPDATING LOG.\n")

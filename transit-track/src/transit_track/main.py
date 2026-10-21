@@ -55,17 +55,24 @@ def main():
 
     if duration:
         print(f"Step: {step}")
-        time_elapsed = time.time() - start_time
-        while time_elapsed < duration:
-            print(f"Time elapsed: {time_elapsed} minutes.")
-            try:
-                save_new_data(current_logs_params)
+        
+        while True:
+            
+            time_elapsed = time.time() - start_time
+            
+            if time_elapsed < duration:
+                print(f"Time elapsed: {time_elapsed / 60:.2f} minutes; {time_elapsed:.2f} seconds")
+                try:
+                    save_new_data(current_logs_params)
 
-                load_logs(dotenv_path, current_logs_params)
+                    load_logs(dotenv_path, current_logs_params)
 
-                step = step + 1
-            except RuntimeError as e:
-                print(e)
+                    step = step + 1
+                except RuntimeError as e:
+                    print(e)
+            else:
+                print("Duration reached. Ending Loop")
+                break
 
 if __name__ == "__main__":
     main()
