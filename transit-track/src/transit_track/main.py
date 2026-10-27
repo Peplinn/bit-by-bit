@@ -27,7 +27,7 @@ def main():
         default=None
     )
 
-    duration = parser.parse_args().duration
+    duration = parser.parse_args().duration * 60
 
     # route_url = "https://pt.mytransitride.com/api/Route"
     status_url = "https://pt.mytransitride.com/api/VehicleStatuses"
@@ -63,11 +63,13 @@ def main():
             if time_elapsed < duration:
                 print(f"Time elapsed: {time_elapsed / 60:.2f} minutes; {time_elapsed:.2f} seconds")
                 try:
-                    save_new_data(current_logs_params)
+                    new_data = save_new_data(current_logs_params)
 
-                    load_logs(dotenv_path, current_logs_params)
-
-                    step = step + 1
+                    if new_data:
+                        load_logs(dotenv_path, current_logs_params)
+                        step = step + 1
+                    time.sleep(10)
+                    print("Sleeping for 10 seconds...\n\n")
                 except RuntimeError as e:
                     print(e)
             else:

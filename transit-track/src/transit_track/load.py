@@ -45,9 +45,13 @@ def load_logs(dotenv_path, current_logs_params):
                 break
 
         new_rows_df = pd.DataFrame(new_rows)
+        new_rows_flag = False
 
         if not new_rows_df.empty:
+            new_rows_flag = True
             print(new_rows_df)
 
         cur.execute("SELECT count(*) FROM positions")
         print("Rows in positions:", cur.fetchone()[0])
+
+        return new_rows_flag
