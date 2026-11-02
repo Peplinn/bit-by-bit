@@ -7,20 +7,18 @@
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
   import * as Table from '$lib/components/ui/table'
   import NextStop from './NextStop.svelte'
+  import Punctuality from './Punctuality.svelte'
   import RouteNumber from './RouteNumber.svelte'
   import type { BusPosition } from './types'
-  import {
-    PUNCTUALITY_COLOR,
-    formatLastUpdated,
-    formatPunctuality,
-    formatRoute,
-    isReporting,
-    matchesSearch,
-    punctualityStatus,
-  } from './format'
+  import { formatRoute, isReporting, matchesSearch } from './format'
   import { busHref, routeHref } from './view.svelte'
 
-  let { buses, now, query }: { buses: BusPosition[]; now: number; query: string } = $props()
+  let {
+    buses,
+    now,
+    query,
+    loading = false,
+  }: { buses: BusPosition[]; now: number; query: string; loading?: boolean } = $props()
 
   const COLUMN_COUNT = 5
 
@@ -89,23 +87,22 @@
   <Table.Row class={reporting ? '' : 'text-muted-foreground'}>
     <Table.Cell>
       <a href={routeHref(bus.route_code)} aria-label="Route {bus.route_code} details">
-        <RouteNumber code={bus.route_code} color={bus.route_color} muted={!reporting} />
+        <RouteNumber
+          code={bus.route_code}
+          color={bus.route_color}
+          muted={!reporting}
+          class="underline underline-offset-2"
+        />
       </a>
     </Table.Cell>
     <Table.Cell>{formatRoute(bus)}</Table.Cell>
     <Table.Cell>
-      <a href={busHref(bus.vehicle_id)} class="underline-offset-4 hover:underline">
+      <a href={busHref(bus.vehicle_id)} class="underline underline-offset-4">
         {bus.vehicle_id}
       </a>
     </Table.Cell>
     <Table.Cell><NextStop {bus} {now} /></Table.Cell>
-    {#if reporting}
-      <Table.Cell class={PUNCTUALITY_COLOR[punctualityStatus(bus.delay_seconds)]}>
-        {formatPunctuality(bus.delay_seconds)}
-      </Table.Cell>
-    {:else}
-      <Table.Cell>{formatLastUpdated(bus, now)}</Table.Cell>
-    {/if}
+    <Table.Cell><Punctuality {bus} {now} /></Table.Cell>
   </Table.Row>
 {/snippet}
 
@@ -152,9 +149,13 @@
     {:else}
       <Table.Row>
         <Table.Cell colspan={COLUMN_COUNT}>
-          {buses.length > 0 && visible.length === 0
-            ? 'No buses match your search or filters.'
-            : 'No buses reporting.'}
+          {#if loading}
+            Loading buses…
+          {:else if buses.length > 0 && visible.length === 0}
+            No buses match your search or filters.
+          {:else}
+            No buses reporting.
+          {/if}
         </Table.Cell>
       </Table.Row>
     {/each}

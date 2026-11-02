@@ -2,15 +2,10 @@
   import * as Dialog from '$lib/components/ui/dialog'
   import * as Table from '$lib/components/ui/table'
   import NextStop from './NextStop.svelte'
+  import Punctuality from './Punctuality.svelte'
   import RouteNumber from './RouteNumber.svelte'
   import type { BusPosition } from './types'
-  import {
-    PUNCTUALITY_COLOR,
-    formatLastUpdated,
-    formatPunctuality,
-    isReporting,
-    punctualityStatus,
-  } from './format'
+  import { isReporting } from './format'
   import { busHref } from './view.svelte'
 
   // `buses` holds every bus on this route (at least one), reporting or not.
@@ -52,22 +47,15 @@
   </Table.Header>
   <Table.Body>
     {#each sorted as bus (bus.vehicle_id)}
-      {@const reporting = isReporting(bus, now)}
-      <Table.Row class={reporting ? '' : 'text-muted-foreground'}>
+      <Table.Row class={isReporting(bus, now) ? '' : 'text-muted-foreground'}>
         <Table.Cell>
-          <a href={busHref(bus.vehicle_id)} class="underline-offset-4 hover:underline">
+          <a href={busHref(bus.vehicle_id)} class="underline underline-offset-4">
             {bus.vehicle_id}
           </a>
         </Table.Cell>
         <Table.Cell>{bus.direction_name}</Table.Cell>
         <Table.Cell><NextStop {bus} {now} /></Table.Cell>
-        {#if reporting}
-          <Table.Cell class={PUNCTUALITY_COLOR[punctualityStatus(bus.delay_seconds)]}>
-            {formatPunctuality(bus.delay_seconds)}
-          </Table.Cell>
-        {:else}
-          <Table.Cell>{formatLastUpdated(bus, now)}</Table.Cell>
-        {/if}
+        <Table.Cell><Punctuality {bus} {now} /></Table.Cell>
       </Table.Row>
     {/each}
   </Table.Body>

@@ -3,39 +3,57 @@
   import * as Dialog from '$lib/components/ui/dialog'
   import { Input } from '$lib/components/ui/input'
   import { Label } from '$lib/components/ui/label'
-  import * as NativeSelect from '$lib/components/ui/native-select'
   import { Textarea } from '$lib/components/ui/textarea'
+  import * as ToggleGroup from '$lib/components/ui/toggle-group'
   import { submitBusDescription } from './api'
-  import { NEXT_STOP_DISPLAY_LABEL } from './format'
-  import type { BusDescription, NextStopDisplay } from './types'
+  import { BIKE_RACK_LABEL, EQUIPMENT_STATUS_LABEL, SEATING_LABEL } from './format'
+  import type { BusDescription } from './types'
   import { busHref } from './view.svelte'
 
   let { vehicleId }: { vehicleId: number } = $props()
 
-  let fields: Omit<BusDescription, 'vehicle_id'> = $state({
+  // Tag groups hand back plain strings, so the form keeps strings and casts on submit.
+  // The tags only offer valid values, so the cast is safe.
+  let fields = $state({
     make_model: '',
-    seating_layout: '',
+    seating: [] as string[],
     seated_capacity: '',
-    bike_rack: '',
+    bike_racks: [] as string[],
     next_stop_display: '',
+    next_stop_audio: '',
     appearance: '',
-    notes: '',
   })
   let status: 'editing' | 'sending' | 'sent' = $state('editing')
   let error = $state('')
 
-  const displayOptions = Object.entries(NEXT_STOP_DISPLAY_LABEL) as [NextStopDisplay, string][]
+  const seatingOptions = Object.entries(SEATING_LABEL)
+  const bikeRackOptions = [...Object.entries(BIKE_RACK_LABEL), ['none', 'None']]
+  const equipmentOptions = Object.entries(EQUIPMENT_STATUS_LABEL)
+
+  // "None" can't be picked alongside a rack: picking None clears the racks, and picking a
+  // rack clears None.
+  function withExclusiveNone(previous: string[], next: string[]): string[] {
+    const added = next.filter((value) => !previous.includes(value))
+    return added.includes('none') ? ['none'] : next.filter((value) => value !== 'none')
+  }
+
+  const isBlank = (value: string | string[]) =>
+    typeof value === 'string' ? value.trim() === '' : value.length === 0
 
   async function handleSubmit(event: SubmitEvent) {
     // Stop the browser's default form submission, which would reload the page.
     event.preventDefault()
-    if (Object.values(fields).every((value) => value.trim() === '')) {
+    if (Object.values(fields).every(isBlank)) {
       error = 'Fill in at least one detail before sending.'
       return
     }
     error = ''
     status = 'sending'
-    await submitBusDescription({ vehicle_id: vehicleId, ...fields })
+    await submitBusDescription({
+      vehicle_id: vehicleId,
+      submitted_at: new Date().toISOString(),
+      ...fields,
+    } as BusDescription)
     status = 'sent'
   }
 </script>
@@ -43,7 +61,7 @@
 <Dialog.Header>
   <Dialog.Title>Help describe bus {vehicleId}</Dialog.Title>
   <Dialog.Description>
-    Fill in whatever you know. Suggestions are reviewed before they appear.
+    Fill in whatever you know. Info is reviewed before being shown to users.
   </Dialog.Description>
 </Dialog.Header>
 
@@ -58,31 +76,77 @@
       <Label for="make_model">Make and model</Label>
       <Input id="make_model" placeholder="e.g. New Flyer XD40" bind:value={fields.make_model} />
     </div>
+
     <div class="space-y-1.5">
-      <Label for="seating_layout">Seating layout</Label>
-      <Textarea
-        id="seating_layout"
-        placeholder="Which way the seats face, where the priority seats are…"
-        bind:value={fields.seating_layout}
-      />
+      <Label id="seating-label">Seating layout</Label>
+      <ToggleGroup.Root
+        type="multiple"
+        variant="outline"
+        spacing={1}
+        aria-labelledby="seating-label"
+        bind:value={fields.seating}
+      >
+        {#each seatingOptions as [value, label] (value)}
+          <ToggleGroup.Item {value}>{label}</ToggleGroup.Item>
+        {/each}
+      </ToggleGroup.Root>
     </div>
+
     <div class="space-y-1.5">
       <Label for="seated_capacity">Number of seats</Label>
       <Input id="seated_capacity" inputmode="numeric" bind:value={fields.seated_capacity} />
     </div>
+
     <div class="space-y-1.5">
-      <Label for="bike_rack">Bike rack</Label>
-      <Input id="bike_rack" placeholder="e.g. Front rack, 2 bikes" bind:value={fields.bike_rack} />
-    </div>
-    <div class="space-y-1.5">
-      <Label for="next_stop_display">Next-stop display</Label>
-      <NativeSelect.Root id="next_stop_display" bind:value={fields.next_stop_display}>
-        <NativeSelect.Option value="">Not sure</NativeSelect.Option>
-        {#each displayOptions as [value, label] (value)}
-          <NativeSelect.Option {value}>{label}</NativeSelect.Option>
+      <Label id="bike-racks-label">Bike rack</Label>
+      <!-- A function binding: Svelte reads with the first function and writes with the second,
+           which lets withExclusiveNone adjust every change. -->
+      <ToggleGroup.Root
+        type="multiple"
+        variant="outline"
+        spacing={1}
+        aria-labelledby="bike-racks-label"
+        bind:value={
+          () => fields.bike_racks,
+          (next) => (fields.bike_racks = withExclusiveNone(fields.bike_racks, next))
+        }
+      >
+        {#each bikeRackOptions as [value, label] (value)}
+          <ToggleGroup.Item {value}>{label}</ToggleGroup.Item>
         {/each}
-      </NativeSelect.Root>
+      </ToggleGroup.Root>
     </div>
+
+    <div class="space-y-1.5">
+      <Label id="display-label">Next-stop information: display</Label>
+      <ToggleGroup.Root
+        type="single"
+        variant="outline"
+        spacing={1}
+        aria-labelledby="display-label"
+        bind:value={fields.next_stop_display}
+      >
+        {#each equipmentOptions as [value, label] (value)}
+          <ToggleGroup.Item {value}>{label}</ToggleGroup.Item>
+        {/each}
+      </ToggleGroup.Root>
+    </div>
+
+    <div class="space-y-1.5">
+      <Label id="audio-label">Next-stop information: audio</Label>
+      <ToggleGroup.Root
+        type="single"
+        variant="outline"
+        spacing={1}
+        aria-labelledby="audio-label"
+        bind:value={fields.next_stop_audio}
+      >
+        {#each equipmentOptions as [value, label] (value)}
+          <ToggleGroup.Item {value}>{label}</ToggleGroup.Item>
+        {/each}
+      </ToggleGroup.Root>
+    </div>
+
     <div class="space-y-1.5">
       <Label for="appearance">Appearance</Label>
       <Textarea
@@ -90,10 +154,6 @@
         placeholder="Livery, advertising wrap, anything that helps recognise it"
         bind:value={fields.appearance}
       />
-    </div>
-    <div class="space-y-1.5">
-      <Label for="notes">Anything else</Label>
-      <Textarea id="notes" bind:value={fields.notes} />
     </div>
 
     {#if error}

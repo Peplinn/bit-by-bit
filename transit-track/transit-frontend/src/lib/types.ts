@@ -25,31 +25,46 @@ export interface BusPosition {
   on_time_probability?: number // 0..1
 }
 
-export type NextStopDisplay = 'working' | 'faulty' | 'none'
+export type SeatingDirection = 'forward' | 'sideways'
+export type BikeRack = 'front' | 'rear'
+// How well a piece of equipment works.
+export type EquipmentStatus = 'working' | 'sub-optimal' | 'faulty'
+
+// Next-stop information on the bus's display and over its speakers.
+export interface NextStopInfo {
+  display?: EquipmentStatus
+  audio?: EquipmentStatus
+}
+
+// A piece of rider-supplied info and the date (ISO, YYYY-MM-DD) it was supplied.
+export interface Dated<T> {
+  value: T
+  date: string
+}
 
 // What we know about one physical bus, independent of where it is right now.
 // Every field is optional: most buses won't be fully described at first.
 export interface BusProfile {
   vehicle_id: number
-  make_model?: string // e.g. "New Flyer XD40"
-  seating_layout?: string // e.g. "Forward-facing, with side-facing priority seats at the front"
-  seated_capacity?: number
-  standing_capacity?: number
-  bike_rack?: string // e.g. "Front rack, 2 bikes"
-  next_stop_display?: NextStopDisplay
-  appearance?: string // livery, wraps, anything that helps recognise it
-  last_reviewed?: string // ISO date the profile was last checked
+  make_model?: Dated<string> // e.g. "New Flyer XD40"
+  seating?: Dated<SeatingDirection[]>
+  seated_capacity?: Dated<number>
+  standing_capacity?: Dated<number>
+  bike_racks?: Dated<BikeRack[]> // an empty list means the bus has no rack
+  next_stop_info?: Dated<NextStopInfo>
+  appearance?: Dated<string> // livery, wraps, anything that helps recognise it
 }
 
 // A rider's suggested description of a bus, sent for review before it updates a BusProfile.
-// Kept as plain text so riders can say "about 40" or "not sure".
+// Empty strings and lists mean "not sure".
 export interface BusDescription {
   vehicle_id: number
+  submitted_at: string // ISO timestamp
   make_model: string
-  seating_layout: string
-  seated_capacity: string
-  bike_rack: string
-  next_stop_display: NextStopDisplay | ''
+  seating: SeatingDirection[]
+  seated_capacity: string // text, so riders can write "about 40"
+  bike_racks: (BikeRack | 'none')[]
+  next_stop_display: EquipmentStatus | ''
+  next_stop_audio: EquipmentStatus | ''
   appearance: string
-  notes: string
 }

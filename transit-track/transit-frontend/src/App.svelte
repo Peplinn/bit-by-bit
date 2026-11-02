@@ -5,24 +5,27 @@
   import BusTable from './lib/BusTable.svelte'
   import DescribeBusForm from './lib/DescribeBusForm.svelte'
   import RouteDetails from './lib/RouteDetails.svelte'
+  import { fetchBusProfile, fetchBuses, startTime } from './lib/api'
+  import { createBusFeed } from './lib/busFeed.svelte'
   import { createClock } from './lib/clock.svelte'
-  import { mockBusProfiles } from './lib/mockBusProfiles'
-  import { mockBuses, mockNow } from './lib/mockBuses'
   import { closeView, view } from './lib/view.svelte'
 
-  const buses = mockBuses
-  const clock = createClock(mockNow)
+  const REFRESH_INTERVAL_MS = 10_000
+
+  const feed = createBusFeed(fetchBuses, REFRESH_INTERVAL_MS)
+  const buses = $derived(feed.buses)
+  const clock = createClock(startTime)
   const now = $derived(clock.now)
 
   // Lives here, not in BusTable, so the future map can filter by the same search.
   let query = $state('')
 
   const current = $derived(view.current)
-  const selectedBus = $derived(
-    current.kind === 'bus' ? buses.find((bus) => bus.vehicle_id === current.vehicleId) : undefined,
-  )
-  const selectedProfile = $derived(
-    selectedBus && mockBusProfiles.find((profile) => profile.vehicle_id === selectedBus.vehicle_id),
+  const selectedId = $derived(current.kind === 'bus' ? current.vehicleId : undefined)
+  const selectedBus = $derived(buses.find((bus) => bus.vehicle_id === selectedId))
+  // A number, so this only refetches when a different bus is opened, not on every refresh.
+  const profilePromise = $derived(
+    selectedId === undefined ? undefined : fetchBusProfile(selectedId),
   )
   const routeBuses = $derived(
     current.kind === 'route' ? buses.filter((bus) => bus.route_code === current.routeCode) : [],
@@ -37,8 +40,13 @@
       aria-label="Search buses"
       bind:value={query}
     />
+    {#if feed.error}
+      <p class="text-sm text-red-600" role="status">
+        Can't reach the bus server ({feed.error}). Retrying every {REFRESH_INTERVAL_MS / 1000} s.
+      </p>
+    {/if}
     <div class="rounded-lg border">
-      <BusTable {buses} {now} {query} />
+      <BusTable {buses} {now} {query} loading={feed.status === 'loading'} />
     </div>
   </div>
 </main>
@@ -55,7 +63,9 @@
       {#if !selectedBus}
         <Dialog.Header>
           <Dialog.Title>Bus {current.vehicleId}</Dialog.Title>
-          <Dialog.Description>This bus isn't in the current data.</Dialog.Description>
+          <Dialog.Description>
+            {feed.status === 'loading' ? 'Loading…' : "This bus isn't in the current data."}
+          </Dialog.Description>
         </Dialog.Header>
       {:else if current.describing}
         <!-- {#key} gives each bus a fresh form, so one bus's draft never shows for another. -->
@@ -63,13 +73,17 @@
           <DescribeBusForm vehicleId={current.vehicleId} />
         {/key}
       {:else}
-        <BusDetails bus={selectedBus} profile={selectedProfile} {now} />
+        <BusDetails bus={selectedBus} profile={profilePromise} {now} />
       {/if}
     {:else if current.kind === 'route'}
       {#if routeBuses.length === 0}
         <Dialog.Header>
           <Dialog.Title>Route {current.routeCode}</Dialog.Title>
-          <Dialog.Description>No buses on this route are in the current data.</Dialog.Description>
+          <Dialog.Description>
+            {feed.status === 'loading'
+              ? 'Loading…'
+              : 'No buses on this route are in the current data.'}
+          </Dialog.Description>
         </Dialog.Header>
       {:else}
         <RouteDetails buses={routeBuses} {now} />
