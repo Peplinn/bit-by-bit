@@ -52,7 +52,7 @@ jobs:
                           content = f.read()
                       
                       # Parse metadata from inside HTML comments <!-- ... -->
-                      fm_match = re.search(r"<!--\s*\n(.*?)\n-->", content, re.DOTALL)
+                      fm_match = re.search(r"^---\s*\n(.*?)\n---", content, re.DOTALL | re.MULTILINE)
                       if fm_match:
                           fm_text = fm_match.group(1)
                           for line in fm_text.splitlines():
