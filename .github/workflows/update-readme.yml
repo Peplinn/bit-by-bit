@@ -1,0 +1,101 @@
+name: Update README with Nursery Index
+
+on:
+  push:
+    branches:
+      - main # Change to 'master' if your default branch is master
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Generate and Update README
+        run: |
+          python3 -c '
+          import os
+          import re
+
+          ignored = {".git", ".github", "node_modules", "__pycache__"}
+          projects = []
+
+          # Scan top-level directories
+          for folder in sorted(os.listdir(".")):
+              if os.path.isdir(folder) and folder not in ignored:
+                  readme_path = os.path.join(folder, "README.md")
+                  
+                  status = "Active"
+                  description = "—"
+                  repo_url = ""
+                  
+                  if os.path.exists(readme_path):
+                      with open(readme_path, "r", encoding="utf-8") as f:
+                          content = f.read()
+                      
+                      # Parse YAML front matter between triple dashes (---)
+                      fm_match = re.match(r"^---\s*\n(.*?)\n---", content, re.DOTALL)
+                      if fm_match:
+                          fm_text = fm_match.group(1)
+                          for line in fm_text.splitlines():
+                              if ":" in line:
+                                  key, val = line.split(":", 1)
+                                  key = key.strip().lower()
+                                  val = val.strip()
+                                  if key == "status":
+                                      status = val
+                                  elif key == "description":
+                                      description = val
+                                  elif key == "repo_url":
+                                      repo_url = val
+
+                  # Format folder link or standalone repo link
+                  folder_link = f"[{folder}](./{folder})"
+                  if repo_url:
+                      status_str = f"[{status}]({repo_url})"
+                  else:
+                      status_str = status
+
+                  projects.append(f"| {folder_link} | {description} | {status_str} |")
+
+          # Build Markdown Table
+          headers = ["Project", "Description", "Status / Repository"]
+          divider = ["---", "---", "---"]
+          table_rows = ["| " + " | ".join(headers) + " |", "| " + " | ".join(divider) + " |"] + projects
+          table_md = "\n".join(table_rows)
+
+          # Inject into root README.md
+          with open("README.md", "r", encoding="utf-8") as f:
+              readme_content = f.read()
+
+          start_marker = "<!-- FOLDERS_START -->"
+          end_marker = "<!-- FOLDERS_END -->"
+
+          if start_marker in readme_content and end_marker in readme_content:
+              start_idx = readme_content.find(start_marker) + len(start_marker)
+              end_idx = readme_content.find(end_marker)
+              
+              new_content = readme_content[:start_idx] + "\n\n" + table_md + "\n\n" + readme_content[end_idx:]
+              
+              with open("README.md", "w", encoding="utf-8") as f:
+                  f.write(new_content)
+          else:
+              print("Error: Markers not found in root README.md")
+          '
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "chore: update project nursery index" || echo "No changes to commit"
+          git push
